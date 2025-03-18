@@ -65,13 +65,13 @@ Console.WriteLine(string.Join("\n", currentPlayers));
 Console.WriteLine("{0} users in this instance.", currentPlayers.Count);
 
 var (redTeamPlayers, blueTeamPlayers) = SplitListRandomly(currentPlayers);
-redTeamPlayers = redTeamPlayers.Select(p => p + ": 赤チーム\n").ToList();
-blueTeamPlayers = blueTeamPlayers.Select(p => p + ": 青チーム\n").ToList();
+redTeamPlayers = redTeamPlayers.Select(p => p + ": 赤チーム\n").OrderBy(p => p).ToList();
+blueTeamPlayers = blueTeamPlayers.Select(p => p + ": 青チーム\n").OrderBy(p => p).ToList();
 
-List<string> redBlueTeamPlayers = redTeamPlayers.Concat(blueTeamPlayers).OrderBy(p => p).ToList();
+List<string> redBlueTeamPlayers = new List<string>(redTeamPlayers);
+redBlueTeamPlayers.Add(string.Format("\n"));
+redBlueTeamPlayers = redBlueTeamPlayers.Concat(blueTeamPlayers).ToList();
 redBlueTeamPlayers.Add(string.Format("赤チーム: {0} users, 青チーム: {1} users", redTeamPlayers.Count, blueTeamPlayers.Count));
-// redBlueTeamPlayers.Add(string.Format("{0} users in Red team, and {1} users in Blue team.", redTeamPlayers.Count, blueTeamPlayers.Count));
-
 
 const int maxLines = 7; // use 7 lines for safety instead of 9 lines in VRChat docs
 const int maxChar = 120; // use 120 characters for safety instead of 144 characters  in VRChat docs
