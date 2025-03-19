@@ -126,9 +126,7 @@ blueTeamPlayers = blueTeamPlayers.Select(p => p + ": 青チーム\n").OrderBy(p 
 var excludedTeamPlayers = excludedPlayers.Select(p => p + ": 見学\n").OrderBy(p => p).ToList();
 
 List<string> redBlueTeamPlayers = new List<string>(redTeamPlayers);
-redBlueTeamPlayers.Add(string.Format("\n"));
 redBlueTeamPlayers = redBlueTeamPlayers.Concat(blueTeamPlayers).ToList();
-redBlueTeamPlayers.Add(string.Format("\n"));
 redBlueTeamPlayers = redBlueTeamPlayers.Concat(excludedTeamPlayers).ToList();
 int total_player_count = redTeamPlayers.Count + blueTeamPlayers.Count + excludedTeamPlayers.Count;
 redBlueTeamPlayers.Add(string.Format("赤:{0}, 青:{1}, 見学{2} -> 合計 {3}", redTeamPlayers.Count, blueTeamPlayers.Count, excludedTeamPlayers.Count, total_player_count));
@@ -165,7 +163,7 @@ Task.Run(async () =>
             OscChatbox.SetIsTyping(false);
             await Task.Delay(1000);
             OscChatbox.SendMessage(msg, true);
-            await Task.Delay(4000);
+            await Task.Delay(5000);
         }
     }
 });
