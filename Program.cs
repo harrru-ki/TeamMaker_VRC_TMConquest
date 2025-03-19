@@ -163,7 +163,7 @@ Task.Run(async () =>
             OscChatbox.SetIsTyping(false);
             await Task.Delay(1000);
             OscChatbox.SendMessage(msg, true);
-            await Task.Delay(4000);
+            await Task.Delay(5000);
         }
     }
 });
