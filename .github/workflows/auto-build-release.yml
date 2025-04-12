@@ -33,6 +33,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: publish/win-x64/TeamMaker_VRC_TMIsland.exe
+          files: publish/win-x64/TeamMaker_VRC_TMConquest.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
