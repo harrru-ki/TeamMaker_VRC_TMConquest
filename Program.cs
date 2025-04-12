@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 Console.OutputEncoding = Encoding.UTF8; // UTF-8 を設定
 
@@ -63,8 +64,13 @@ foreach (var player in leftPlayers)
 }
 
 
-
-JsonData jsonData = ReadJsoData(jsonDataPath);
+// JsonSerializerOptions に TypeInfoResolver を指定する
+var jsonSerOptions = new JsonSerializerOptions
+{
+    TypeInfoResolver = MyJsonContext.Default,
+    WriteIndented = true,
+};
+JsonData jsonData = ReadJsoData(jsonDataPath, jsonSerOptions);
 List<string> excludedPlayers = jsonData.excludedPlayers;
 while (true)
 {
@@ -113,7 +119,7 @@ while (true)
         Console.WriteLine("---> 無効な入力です。再入力してください...");
     }
 }
-SaveJsonData(jsonData, jsonDataPath);
+SaveJsonData(jsonData, jsonDataPath, jsonSerOptions);
 
 List<string> targetPlayers = new List<string>(currentPlayers);
 foreach (var player in excludedPlayers)
@@ -209,7 +215,7 @@ static (List<string>, List<string>) SplitListRandomly(List<string> list)
     return (group1, group2);
 }
 
-static JsonData ReadJsoData(string filePath)
+static JsonData ReadJsoData(string filePath, JsonSerializerOptions jsonSerOptions)
 {
     JsonData jsonData = new JsonData(); 
 
@@ -218,7 +224,7 @@ static JsonData ReadJsoData(string filePath)
         try
         {
             string json = File.ReadAllText(filePath);
-            jsonData = JsonSerializer.Deserialize<JsonData>(json);
+            jsonData = JsonSerializer.Deserialize<JsonData>(json, jsonSerOptions);
             Console.WriteLine("読込完了: {0}", filePath);
         }
         catch (Exception e)
@@ -229,12 +235,12 @@ static JsonData ReadJsoData(string filePath)
 
     return jsonData;
 }
-static void SaveJsonData(JsonData data, string filePath)
+static void SaveJsonData(JsonData data, string filePath, JsonSerializerOptions jsonSerOptions)
 {
     try
     {
         // JSONへシリアライズ（整形あり）
-        string json = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true });
+        string json = JsonSerializer.Serialize(data, jsonSerOptions);
 
         // ファイルに書き込み
         File.WriteAllText(filePath, json);
@@ -245,7 +251,12 @@ static void SaveJsonData(JsonData data, string filePath)
         Console.WriteLine($"ファイルの保存中にエラーが発生しました: {e.Message}");
     }
 }
-class JsonData
+public class JsonData
 {
     public List<string> excludedPlayers { get; set; } = new List<string>();
 }
+[JsonSerializable(typeof(JsonData))]
+public partial class MyJsonContext : JsonSerializerContext
+{
+}
+
