@@ -14,4 +14,8 @@
     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="VRCOscLib" Version="1.6.0" />
+  </ItemGroup>
+
 </Project>
