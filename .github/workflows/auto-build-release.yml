@@ -1,0 +1,38 @@
+name: AOT Build and Release for win-x64
+
+on:
+  push:
+    tags:
+      - 'v*' # "v" で始まるタグに反応します (例: v1.0.0)
+  workflow_dispatch: # 手動トリガーも有効化
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # リポジトリをチェックアウト
+      - name: Check out repository
+        uses: actions/checkout@v3
+
+      # .NET SDK をセットアップ
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x' # .NET 9 を指定
+
+      # 依存関係を復元
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # プロジェクトを AOT コンパイル
+      - name: Publish AOT Build for win-x64
+        run: dotnet publish -c Release -r win-x64 /p:PublishAot=true /p:SelfContained=true /p:PublishSingleFile=true /p:PublishTrimmed=true -o publish\win-x64
+
+      # GitHub Release に成果物をアップロード
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: publish/win-x64/TeamMaker_VRC_TMIsland.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
